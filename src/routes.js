@@ -8,8 +8,8 @@ routes.use((req, res, next) => {
   next();
 });
 
-routes.get('/', TestController.index.bind(TestController));
+routes.get('/products', TestController.index.bind(TestController));
 
-routes.get('/:name', TestController.indexWithName.bind(TestController));
+routes.get('/products/:id', TestController.indexWithName.bind(TestController));
 
 export default routes;

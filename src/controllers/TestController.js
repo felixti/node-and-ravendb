@@ -1,11 +1,21 @@
 import { Request, Response } from 'express';
 import { DocumentStore } from 'ravendb';
+import * as fs from 'fs';
+import { resolve } from 'path';
+ 
 
 class TestController {
 
   constructor(){
     this.values = ['banana', 'apple', 'pear', 'strawberry'];
-    const store = new DocumentStore('https://a.free.felixlabs.ravendb.cloud', 'products');
+    const certificatePath = resolve(__dirname, '..', '..', 'certs', 'ravendb.certificate.pfx');
+    console.log(certificatePath);
+    const authOptions = {
+      certificate: fs.readFileSync(certificatePath),
+      password: process.env.CERT_PASSWORD,
+      type: 'pfx'
+    };
+    const store = new DocumentStore(process.env.RAVENDB_URL, 'products', authOptions);
     store.initialize();
 
     this.session = store.openSession();
@@ -20,15 +30,14 @@ class TestController {
   async index(req, res) {
 
     try {
-      let product = {
-        title: 'test',
-        description: 'test-2'
-      };
+      const products = await this.session
+                                 .query({ collection: '@empty' })
+                                 .selectFields(['title', 'description'])
+                                 .all();
   
-      await this.session.store(product);
-      await this.session.saveChanges();
-  
-      return res.json({ product });
+      return res.json({ products });
+
+
       
     } catch (error) {
       throw error;
@@ -41,10 +50,12 @@ class TestController {
    * @param {Response} res
    * @public 
    */
-  indexWithName(req, res) {
-    const name = req.params.name;
+  async indexWithName(req, res) {
+    const id = req.params.id;
+
+    const product = await this.session.load(id);
   
-    return res.json({ name, fruit: this.values[0] });
+    return res.json({ product });
   }
 }
 
