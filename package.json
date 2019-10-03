@@ -1,0 +1,17 @@
+{
+  "name": "gobarber",
+  "version": "1.0.0",
+  "license": "MIT",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "nodemon src/index.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "ravendb": "^4.1.6"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.3",
+    "sucrase": "^3.10.1"
+  }
+}
