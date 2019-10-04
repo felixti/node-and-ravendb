@@ -12,4 +12,6 @@ routes.get('/products', TestController.index.bind(TestController));
 
 routes.get('/products/:id', TestController.indexWithName.bind(TestController));
 
+routes.post('/products', TestController.create.bind(TestController));
+
 export default routes;

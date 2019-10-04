@@ -38,11 +38,11 @@ class TestController {
       const session = this.store.openSession();
      
       const products = await session
-                              .query({ collection: '@empty' })
+                              .query({ collection: 'Products' })
                               .selectFields(['title', 'description'])
                               .all();
   
-      return res.json({ products });
+      return res.json(products);
 
 
       
@@ -73,14 +73,16 @@ class TestController {
    * @param {Response} res
    * @public 
    */
-  async add(req, res) {
+  async create(req, res) {
     try {
-      const product = req.body;
+      const { title, description } = req.body;
       const session = this.store.openSession();
-
-      const newProduct = await session.store(product);
+      const newProduct = new Product('products/', title, description);
       
-      return res.json(product);
+      await session.store(newProduct);
+      await session.saveChanges();
+
+      return res.json(newProduct);
     } catch (error) {
       throw error;
     }
