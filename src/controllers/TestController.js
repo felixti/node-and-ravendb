@@ -23,6 +23,7 @@ class TestController {
       type: 'pfx'
     };
     this.store = new DocumentStore(process.env.RAVENDB_URL, 'products', authOptions);
+    this.store.initialize();
   }
 
   /**
