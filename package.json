@@ -4,7 +4,8 @@
   "license": "MIT",
   "main": "src/index.js",
   "scripts": {
-    "dev": "nodemon src/index.js"
+    "dev": "nodemon src/index.js",
+    "debug": "nodemon src/index.js --config nodemon-debug.json"
   },
   "dependencies": {
     "dotenv": "^8.1.0",

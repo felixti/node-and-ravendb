@@ -14,4 +14,6 @@ routes.get('/products/:id', TestController.indexWithName.bind(TestController));
 
 routes.post('/products', TestController.create.bind(TestController));
 
+routes.patch('/products/:id', TestController.update.bind(TestController));
+
 export default routes;

@@ -35,19 +35,16 @@ class TestController {
   async index(req, res) {
 
     try {
-      const session = this.store.openSession();
+      const session = this.store.openSession( { noTracking: true } );
      
       const products = await session
                               .query({ collection: 'Products' })
                               .selectFields(['title', 'description'])
                               .all();
-  
+                              
       return res.json(products);
-
-
-      
     } catch (error) {
-      throw error;
+      res.json(error).status(400);
     }
   }
   
@@ -62,7 +59,7 @@ class TestController {
 
     const session = this.store.openSession();
 
-    const product = await session.load(id);
+    const product = await session.load(`products/${id}`);
   
     return res.json({ product });
   }
@@ -76,6 +73,7 @@ class TestController {
   async create(req, res) {
     try {
       const { title, description } = req.body;
+
       const session = this.store.openSession();
       const newProduct = new Product('products/', title, description);
       
@@ -84,7 +82,34 @@ class TestController {
 
       return res.json(newProduct);
     } catch (error) {
-      throw error;
+      return res.json(error).status(400);
+    }
+  }
+
+      /**
+   * 
+   * @param {Request} req 
+   * @param {Response} res
+   * @public 
+   */
+  async update(req, res) {
+    try {
+      const { id: productId } = req.params;
+            
+      const session = await this.store.openSession(); 
+      let product = await session.load(`products/${productId}`, { documentType: 'products' } );   
+
+      const { title, description } = req.body;
+
+      product.title = title;
+      product.description = description;
+
+      await session.saveChanges();
+
+      return res.json(product);      
+    } catch (error) {
+      console.error(error);
+      return res.json(error).status(400);
     }
   }
 }
